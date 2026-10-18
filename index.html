@@ -80,13 +80,11 @@
 
       <!-- NAVIGATION & TOOLS -->
       <nav class="space-y-3">
-        <!-- Google Sheet หลังบ้าน ขึ้นมาแทนที่หน้าหลัก -->
         <a id="sheetLink" href="#" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-600 text-white font-medium text-sm transition-all shadow-md shadow-emerald-600/30">
           <i class="fa-solid fa-file-excel w-5 text-center"></i>
           <span>Google Sheet หลังบ้าน</span>
         </a>
 
-        <!-- ปุ่มสลับธีม -->
         <button onclick="toggleTheme()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border border-slate-700/60 dark:border-slate-700 hover:bg-slate-500/10 font-medium text-sm transition-all cursor-pointer">
           <span class="flex items-center gap-2 text-slate-300 dark:text-slate-200">
             <i id="themeIcon" class="fa-solid fa-moon text-amber-400"></i>
@@ -95,7 +93,6 @@
           <span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 dark:bg-slate-700 text-slate-300">เปลี่ยนธีม</span>
         </button>
 
-        <!-- ปุ่มเพิ่มรายการ ย้ายมาอยู่ใต้ปุ่มสลับธีม -->
         <button onclick="openAddModal()" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-md shadow-blue-600/30 transition-all active:scale-95">
           <i class="fa-solid fa-plus"></i>
           <span>เพิ่มรายการ</span>
@@ -214,7 +211,7 @@
         <!-- RIGHT COLUMN -->
         <div class="space-y-4 sm:space-y-6">
 
-          <!-- TODAY SUMMARY CARD -->
+          <!-- TODAY SUMMARY CARD (ลบคงเหลือสุทธิออกแล้ว) -->
           <div class="glass-card p-4 sm:p-5 rounded-2xl border">
             <div class="flex items-center gap-2 mb-3 sm:mb-4">
               <i class="fa-solid fa-lightbulb text-amber-400"></i>
@@ -228,49 +225,24 @@
                 </span>
                 <span class="font-semibold text-emerald-500">฿ <span id="todayIncome">0.00</span></span>
               </div>
-              <div class="flex items-center justify-between py-1.5 border-b border-slate-700/40">
+              <div class="flex items-center justify-between py-1.5">
                 <span class="text-slate-400 flex items-center gap-2">
                   <i class="fa-solid fa-arrow-down text-rose-500"></i> เงินออก
                 </span>
                 <span class="font-semibold text-rose-500">฿ <span id="todayExpense">0.00</span></span>
               </div>
-              <div class="flex items-center justify-between py-1.5 pt-1">
-                <span class="text-slate-300 font-medium flex items-center gap-2">
-                  <i class="fa-solid fa-credit-card text-blue-500"></i> คงเหลือสุทธิ
-                </span>
-                <span class="font-bold text-blue-500">฿ <span id="todayBalance">0.00</span></span>
-              </div>
             </div>
           </div>
 
-          <!-- OVERVIEW STATISTICS (DONUT CHART) -->
+          <!-- OVERVIEW STATISTICS (BAR CHART แยกตามเดือน) -->
           <div class="glass-card p-4 sm:p-5 rounded-2xl border">
             <div class="flex items-center gap-2 mb-3 sm:mb-4">
-              <i class="fa-solid fa-chart-line text-blue-500"></i>
-              <h3 class="font-bold text-xs sm:text-sm text-slate-100">สถิติภาพรวม</h3>
+              <i class="fa-solid fa-chart-column text-blue-500"></i>
+              <h3 class="font-bold text-xs sm:text-sm text-slate-100">สถิติภาพรวม (รายเดือน)</h3>
             </div>
 
-            <div class="relative flex items-center justify-center my-2">
-              <div class="w-36 h-36 sm:w-44 sm:h-44">
-                <canvas id="cashflowChart"></canvas>
-              </div>
-              <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                <span class="text-[10px] text-slate-400">กระแสเงินสดรวม</span>
-                <span class="text-xs font-bold text-white">฿ <span id="totalCashflow">0</span></span>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 mt-3 sm:mt-4 text-xs pt-3 border-t border-slate-700/40">
-              <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                <span class="text-slate-400">รายรับ</span>
-                <span class="ml-auto font-medium text-slate-200" id="incomePercentText">0%</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                <span class="text-slate-400">รายจ่าย</span>
-                <span class="ml-auto font-medium text-slate-200" id="expensePercentText">0%</span>
-              </div>
+            <div class="relative flex items-center justify-center my-2 h-48">
+              <canvas id="monthlyChart"></canvas>
             </div>
           </div>
 
@@ -304,18 +276,19 @@
     </div>
   </div>
 
-  <!-- MODAL: เพิ่มรายการใหม่ -->
+  <!-- MODAL: เพิ่ม/แก้ไข รายการใหม่ -->
   <div id="addModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-3 sm:p-4">
     <div class="modal-card w-full max-w-sm sm:max-w-md rounded-2xl p-5 sm:p-6 relative space-y-3.5 border shadow-2xl max-h-[90vh] overflow-y-auto">
       <button onclick="closeAddModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1">
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
 
-      <h3 class="text-base font-bold text-white flex items-center gap-2">
+      <h3 id="modalHeaderTitle" class="text-base font-bold text-white flex items-center gap-2">
         <i class="fa-solid fa-plus text-blue-500"></i> เพิ่มรายการใหม่
       </h3>
 
-      <form id="addForm" onsubmit="saveNewTransaction(event)" class="space-y-3 text-xs">
+      <form id="addForm" onsubmit="saveTransaction(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="editRowIndex" value="">
         <div>
           <label class="block text-slate-400 mb-1 font-medium">ประเภท</label>
           <select id="addType" onchange="updateTitleOptions()" class="w-full input-bg border rounded-xl p-2.5 outline-none focus:border-blue-500">
@@ -327,7 +300,6 @@
         <div>
           <label class="block text-slate-400 mb-1 font-medium">รายการ</label>
           <select id="addTitle" required onchange="handleTitleChange(this.value)" class="w-full input-bg border rounded-xl p-2.5 outline-none focus:border-blue-500">
-            <!-- ตัวรายการจะถูกเติมโดย JavaScript อัตโนมัติตามประเภท -->
           </select>
           <div id="customTitleContainer" class="hidden mt-2">
             <input type="text" id="addCustomTitle" placeholder="ระบุชื่อรายการ..." class="w-full input-bg border rounded-xl p-2.5 outline-none focus:border-blue-500">
@@ -355,13 +327,13 @@
   <script>
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbz-deg7kT85Kql3qjaQTJPQHmkc_kZOuOl6eM0IMyLwmr9kaedOtvrgvNPw4Je9Ru4w/exec';
 
-    let myChart = null;
+    let monthlyChartInstance = null;
     let cachedDashboardData = null;
 
     window.onload = function() {
       initChart();
       loadData();
-      updateTitleOptions(); // กำหนดรายการเริ่มต้นตามประเภท
+      updateTitleOptions();
     };
 
     function openSidebar() {
@@ -389,7 +361,6 @@
       }
     }
 
-    // ฟังก์ชันเปลี่ยนรายการในดรอปดาวน์ตามประเภท (รายรับ / รายจ่าย)
     function updateTitleOptions() {
       const type = document.getElementById('addType').value;
       const titleSelect = document.getElementById('addTitle');
@@ -409,7 +380,6 @@
         titleSelect.appendChild(el);
       });
 
-      // ซ่อนช่องกรอกอื่นๆ ไว้ก่อน
       document.getElementById('customTitleContainer').classList.add('hidden');
       document.getElementById('addCustomTitle').required = false;
     }
@@ -426,20 +396,19 @@
       }
     }
 
-    // ฟังก์ชันเลือกไอคอนและอิโมจิอัตโนมัติตามชื่อรายการ
     function getTransactionEmojiAndIcon(title) {
       let t = (title || '').toLowerCase();
-      if (t.includes('น้ำมัน')) return { emoji: '⛽', icon: 'fa-gas-pump', color: 'bg-amber-500/10 text-amber-500' };
-      if (t.includes('อาหาร') || t.includes('กิน')) return { emoji: '🍜', icon: 'fa-utensils', color: 'bg-rose-500/10 text-rose-500' };
-      if (t.includes('เครื่องดื่ม') || t.includes('น้ำ')) return { emoji: '🧋', icon: 'fa-cup-straw', color: 'bg-cyan-500/10 text-cyan-500' };
-      if (t.includes('เงินเดือน') || t.includes('รายรับ')) return { emoji: '💵', icon: 'fa-money-bill-wave', color: 'bg-emerald-500/10 text-emerald-500' };
-      if (t.includes('เงินเก็บ') || t.includes('ออม')) return { emoji: '💰', icon: 'fa-piggy-bank', color: 'bg-blue-500/10 text-blue-500' };
-      if (t.includes('ผ่อน')) return { emoji: '🚗', icon: 'fa-car', color: 'bg-purple-500/10 text-purple-500' };
-      if (t.includes('เน็ต') || t.includes('อินเทอร์เน็ต')) return { emoji: '🌐', icon: 'fa-wifi', color: 'bg-indigo-500/10 text-indigo-500' };
-      if (t.includes('ซ่อม')) return { emoji: '🔧', icon: 'fa-wrench', color: 'bg-orange-500/10 text-orange-500' };
-      if (t.includes('ครัว') || t.includes('ของใช้')) return { emoji: '🛒', icon: 'fa-basket-shopping', color: 'bg-pink-500/10 text-pink-500' };
-      if (t.includes('ค่าเช่า')) return { emoji: '🏠', icon: 'fa-house', color: 'bg-teal-500/10 text-teal-500' };
-      return { emoji: '📝', icon: 'fa-receipt', color: 'bg-blue-500/10 text-blue-500' };
+      if (t.includes('น้ำมัน')) return { emoji: '⛽', color: 'bg-amber-500/10 text-amber-500' };
+      if (t.includes('อาหาร') || t.includes('กิน')) return { emoji: '🍜', color: 'bg-rose-500/10 text-rose-500' };
+      if (t.includes('เครื่องดื่ม') || t.includes('น้ำ')) return { emoji: '🧋', color: 'bg-cyan-500/10 text-cyan-500' };
+      if (t.includes('เงินเดือน') || t.includes('รายรับ')) return { emoji: '💵', color: 'bg-emerald-500/10 text-emerald-500' };
+      if (t.includes('เงินเก็บ') || t.includes('ออม')) return { emoji: '💰', color: 'bg-blue-500/10 text-blue-500' };
+      if (t.includes('ผ่อน')) return { emoji: '🚗', color: 'bg-purple-500/10 text-purple-500' };
+      if (t.includes('เน็ต') || t.includes('อินเทอร์เน็ต')) return { emoji: '🌐', color: 'bg-indigo-500/10 text-indigo-500' };
+      if (t.includes('ซ่อม')) return { emoji: '🔧', color: 'bg-orange-500/10 text-orange-500' };
+      if (t.includes('ครัว') || t.includes('ของใช้')) return { emoji: '🛒', color: 'bg-pink-500/10 text-pink-500' };
+      if (t.includes('ค่าเช่า')) return { emoji: '🏠', color: 'bg-teal-500/10 text-teal-500' };
+      return { emoji: '📝', color: 'bg-blue-500/10 text-blue-500' };
     }
 
     function loadData() {
@@ -474,17 +443,12 @@
 
       document.getElementById('todayIncome').innerText = s.todayIncome.toLocaleString('th-TH', {minimumFractionDigits: 2});
       document.getElementById('todayExpense').innerText = s.todayExpense.toLocaleString('th-TH', {minimumFractionDigits: 2});
-      document.getElementById('todayBalance').innerText = s.todayBalance.toLocaleString('th-TH', {minimumFractionDigits: 2});
-
-      document.getElementById('totalCashflow').innerText = s.totalCashflow.toLocaleString('th-TH');
-      document.getElementById('incomePercentText').innerText = s.incomePercent + '%';
-      document.getElementById('expensePercentText').innerText = s.expensePercent + '%';
 
       if (res.sheetUrl) {
         document.getElementById('sheetLink').href = res.sheetUrl;
       }
 
-      updateChart(s.totalIncome, s.totalExpense);
+      updateMonthlyChart(s.monthlyData);
 
       const container = document.getElementById('transactionList');
       if (!res.transactions || res.transactions.length === 0) {
@@ -511,8 +475,11 @@
                 <p class="text-[10px] sm:text-[11px] text-slate-400 truncate">${t.date}${reasonText}</p>
               </div>
             </div>
-            <div class="flex items-center gap-2.5 sm:gap-4 shrink-0 ml-2">
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-2">
               <span class="font-bold text-xs ${colorClass}">${sign}฿${t.amount.toLocaleString('th-TH', {minimumFractionDigits: 2})}</span>
+              <button onclick='openEditModal(${JSON.stringify(t)})' class="hover:text-blue-400 text-slate-400 p-1 transition-all text-xs" title="แก้ไขรายการ">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
               <button onclick="deleteItem(${t.rowIndex})" class="hover:text-rose-500 text-slate-400 p-1 transition-all text-xs" title="ลบรายการ">
                 <i class="fa-solid fa-trash"></i>
               </button>
@@ -521,6 +488,55 @@
         `;
       });
       container.innerHTML = html;
+    }
+
+    // สร้างกราฟแท่งรายเดือน (เงินเข้า, เงินออก, สุทธิ)
+    function initChart() {
+      const ctx = document.getElementById('monthlyChart').getContext('2d');
+      monthlyChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [],
+          datasets: [
+            { label: 'เงินเข้า', data: [], backgroundColor: '#10B981', borderRadius: 4 },
+            { label: 'เงินออก', data: [], backgroundColor: '#EF4444', borderRadius: 4 },
+            { label: 'ยอดสุทธิ', data: [], backgroundColor: '#3B82F6', borderRadius: 4 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#94A3B8', font: { size: 10 } } }
+          },
+          scales: {
+            x: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { display: false } },
+            y: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { color: '#1E293B' } }
+          }
+        }
+      });
+    }
+
+    function updateMonthlyChart(monthlyData) {
+      if (!monthlyChartInstance || !monthlyData) return;
+      const sortedMonths = Object.keys(monthlyData).sort();
+      let labels = [];
+      let incomeArr = [];
+      let expenseArr = [];
+      let netArr = [];
+
+      sortedMonths.forEach(m => {
+        labels.push(m);
+        incomeArr.push(monthlyData[m].income);
+        expenseArr.push(monthlyData[m].expense);
+        netArr.push(monthlyData[m].income - monthlyData[m].expense);
+      });
+
+      monthlyChartInstance.data.labels = labels;
+      monthlyChartInstance.data.datasets[0].data = incomeArr;
+      monthlyChartInstance.data.datasets[1].data = expenseArr;
+      monthlyChartInstance.data.datasets[2].data = netArr;
+      monthlyChartInstance.update();
     }
 
     function openDetailModal(type) {
@@ -576,42 +592,11 @@
       document.getElementById('detailModal').classList.add('hidden');
     }
 
-    function initChart() {
-      const ctx = document.getElementById('cashflowChart').getContext('2d');
-      myChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['รายรับ', 'รายจ่าย'],
-          datasets: [{
-            data: [1, 1],
-            backgroundColor: ['#10B981', '#EF4444'],
-            borderWidth: 0,
-            hoverOffset: 4
-          }]
-        },
-        options: {
-          cutout: '80%',
-          plugins: { legend: { display: false } },
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      });
-    }
-
-    function updateChart(inc, exp) {
-      if (!myChart) return;
-      myChart.data.datasets[0].data = [inc || 0, exp || 0];
-      myChart.update();
-    }
-
     function deleteItem(rowIndex) {
       if (confirm('คุณต้องการลบรายการนี้ใช่หรือไม่?')) {
         fetch(GAS_API_URL, {
           method: 'POST',
-          body: JSON.stringify({
-            action: 'deleteTransaction',
-            rowIndex: rowIndex
-          })
+          body: JSON.stringify({ action: 'deleteTransaction', rowIndex: rowIndex })
         })
         .then(res => res.json())
         .then(() => loadData())
@@ -619,12 +604,51 @@
       }
     }
 
-    function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); document.getElementById('addModal').classList.add('flex'); }
+    function openAddModal() {
+      document.getElementById('editRowIndex').value = '';
+      document.getElementById('modalHeaderTitle').innerHTML = '<i class="fa-solid fa-plus text-blue-500"></i> เพิ่มรายการใหม่';
+      document.getElementById('addForm').reset();
+      document.updateTitleOptions();
+      document.getElementById('addModal').classList.remove('hidden');
+      document.getElementById('addModal').classList.add('flex');
+    }
+
+    function openEditModal(t) {
+      document.getElementById('editRowIndex').value = t.rowIndex;
+      document.getElementById('modalHeaderTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-blue-500"></i> แก้ไขรายการ';
+      
+      document.getElementById('addType').value = t.type;
+      updateTitleOptions();
+      
+      const titleSelect = document.getElementById('addTitle');
+      let found = false;
+      for (let i = 0; i < titleSelect.options.length; i++) {
+        if (titleSelect.options[i].value === t.title) {
+          titleSelect.value = t.title;
+          found = true;
+          break;
+        }
+      }
+      
+      if (!found) {
+        titleSelect.value = 'อื่นๆ';
+        handleTitleChange('อื่นๆ');
+        document.getElementById('addCustomTitle').value = t.title;
+      } else {
+        handleTitleChange(t.title);
+      }
+
+      document.getElementById('addAmount').value = t.amount;
+      document.getElementById('addAccount').value = t.account || '';
+
+      document.getElementById('addModal').classList.remove('hidden');
+      document.getElementById('addModal').classList.add('flex');
+    }
+
     function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); }
 
-    function saveNewTransaction(e) {
+    function saveTransaction(e) {
       e.preventDefault();
-      
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
       submitBtn.innerText = 'กำลังบันทึก...';
@@ -633,6 +657,9 @@
       if (titleValue === 'อื่นๆ') {
         titleValue = document.getElementById('addCustomTitle').value.trim() || 'อื่นๆ';
       }
+
+      const editIndex = document.getElementById('editRowIndex').value;
+      const actionName = editIndex ? 'updateTransaction' : 'addTransaction';
 
       const item = {
         type: document.getElementById('addType').value,
@@ -644,7 +671,8 @@
       fetch(GAS_API_URL, {
         method: 'POST',
         body: JSON.stringify({
-          action: 'addTransaction',
+          action: actionName,
+          rowIndex: editIndex ? parseInt(editIndex) : undefined,
           data: item
         })
       })
@@ -652,7 +680,6 @@
       .then(() => {
         closeAddModal();
         document.getElementById('addForm').reset();
-        updateTitleOptions();
         loadData();
       })
       .catch(err => alert('บันทึกไม่สำเร็จ: ' + err))
