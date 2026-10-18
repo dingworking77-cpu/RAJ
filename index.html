@@ -78,12 +78,15 @@
         </button>
       </div>
 
+      <!-- NAVIGATION & TOOLS -->
       <nav class="space-y-3">
-        <a href="#" onclick="closeSidebar()" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-blue-600 text-white font-medium text-sm transition-all shadow-md shadow-blue-600/30">
-          <i class="fa-solid fa-house w-5 text-center"></i>
-          <span>หน้าหลัก</span>
+        <!-- Google Sheet หลังบ้าน ขึ้นมาแทนที่หน้าหลัก -->
+        <a id="sheetLink" href="#" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-600 text-white font-medium text-sm transition-all shadow-md shadow-emerald-600/30">
+          <i class="fa-solid fa-file-excel w-5 text-center"></i>
+          <span>Google Sheet หลังบ้าน</span>
         </a>
 
+        <!-- ปุ่มสลับธีม -->
         <button onclick="toggleTheme()" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border border-slate-700/60 dark:border-slate-700 hover:bg-slate-500/10 font-medium text-sm transition-all cursor-pointer">
           <span class="flex items-center gap-2 text-slate-300 dark:text-slate-200">
             <i id="themeIcon" class="fa-solid fa-moon text-amber-400"></i>
@@ -91,15 +94,13 @@
           </span>
           <span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-800 dark:bg-slate-700 text-slate-300">เปลี่ยนธีม</span>
         </button>
-      </nav>
 
-      <div class="mt-8 pt-4 border-t border-slate-700/50">
-        <p class="text-[11px] font-semibold text-purple-400 uppercase tracking-wider px-3 mb-2">แหล่งข้อมูล (Backend Hub)</p>
-        <a id="sheetLink" href="#" target="_blank" class="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-all">
-          <i class="fa-solid fa-file-excel text-emerald-500"></i>
-          <span>Google Sheet หลังบ้าน</span>
-        </a>
-      </div>
+        <!-- ปุ่มเพิ่มรายการ ย้ายมาอยู่ใต้ปุ่มสลับธีม -->
+        <button onclick="openAddModal()" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-md shadow-blue-600/30 transition-all active:scale-95">
+          <i class="fa-solid fa-plus"></i>
+          <span>เพิ่มรายการ</span>
+        </button>
+      </nav>
     </div>
 
     <div class="text-[11px] text-slate-500 text-center py-2 border-t border-slate-700/50 mt-4 md:mt-0">
@@ -116,18 +117,9 @@
         <button onclick="openSidebar()" class="md:hidden p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700/60 active:scale-95 transition-all">
           <i class="fa-solid fa-bars text-sm"></i>
         </button>
-
-        <div class="flex items-center gap-2 text-sm font-semibold text-slate-200">
-          <i class="fa-solid fa-house text-blue-500 hidden sm:inline-block"></i>
-          <span class="text-xs sm:text-sm">หน้าหลัก</span>
-        </div>
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3">
-        <button onclick="openAddModal()" class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-500 text-xs font-semibold flex items-center gap-1.5 shadow-md shadow-blue-600/30 transition-all active:scale-95">
-          <i class="fa-solid fa-plus"></i>
-          <span>เพิ่มรายการ</span>
-        </button>
         <button onclick="loadData()" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition-all text-xs border border-slate-700/50" title="รีเฟรช">
           <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
         </button>
@@ -140,7 +132,7 @@
       <!-- TOP 3 SUMMARY CARDS -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5">
         
-        <!-- CARD 1: เงินเข้า (คลิกเพื่อดูรายละเอียด) -->
+        <!-- CARD 1: เงินเข้า -->
         <div onclick="openDetailModal('income')" class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden border cursor-pointer hover:border-emerald-500/50 transition-all group">
           <div class="flex items-start justify-between mb-3 sm:mb-4">
             <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-sm sm:text-base group-hover:scale-110 transition-transform">
@@ -161,7 +153,7 @@
           </p>
         </div>
 
-        <!-- CARD 2: เงินออก (คลิกเพื่อดูรายละเอียด) -->
+        <!-- CARD 2: เงินออก -->
         <div onclick="openDetailModal('expense')" class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden border cursor-pointer hover:border-rose-500/50 transition-all group">
           <div class="flex items-start justify-between mb-3 sm:mb-4">
             <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center text-sm sm:text-base group-hover:scale-110 transition-transform">
@@ -289,7 +281,7 @@
     </div>
   </main>
 
-  <!-- MODAL: แสดงรายละเอียดแยกตามรายการ (เงินเข้า / เงินออก) -->
+  <!-- MODAL: รายละเอียดแยกตามประเภท -->
   <div id="detailModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-3 sm:p-4">
     <div class="modal-card w-full max-w-md rounded-2xl p-5 sm:p-6 relative space-y-4 border shadow-2xl max-h-[90vh] overflow-y-auto">
       <button onclick="closeDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1">
@@ -304,10 +296,7 @@
         </div>
       </div>
 
-      <!-- รายการสรุปย่อย -->
-      <div id="detailBreakdownList" class="space-y-2 pt-2 max-h-[350px] overflow-y-auto pr-1">
-        <!-- ยัดข้อมูลตรงนี้ด้วย JS -->
-      </div>
+      <div id="detailBreakdownList" class="space-y-2 pt-2 max-h-[350px] overflow-y-auto pr-1"></div>
 
       <button onclick="closeDetailModal()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all">
         ปิดหน้าต่าง
@@ -329,7 +318,7 @@
       <form id="addForm" onsubmit="saveNewTransaction(event)" class="space-y-3 text-xs">
         <div>
           <label class="block text-slate-400 mb-1 font-medium">ประเภท</label>
-          <select id="addType" class="w-full input-bg border rounded-xl p-2.5 outline-none focus:border-blue-500">
+          <select id="addType" onchange="updateTitleOptions()" class="w-full input-bg border rounded-xl p-2.5 outline-none focus:border-blue-500">
             <option value="expense">เงินออก (รายจ่าย)</option>
             <option value="income">เงินเข้า (รายรับ)</option>
           </select>
@@ -338,17 +327,7 @@
         <div>
           <label class="block text-slate-400 mb-1 font-medium">รายการ</label>
           <select id="addTitle" required onchange="handleTitleChange(this.value)" class="w-full input-bg border rounded-xl p-2.5 outline-none focus:border-blue-500">
-            <option value="" disabled selected>-- เลือกรายการ --</option>
-            <option value="น้ำมันรถ">น้ำมันรถ</option>
-            <option value="อาหาร">อาหาร</option>
-            <option value="เครื่องดื่ม">เครื่องดื่ม</option>
-            <option value="ของใช้">ของใช้</option>
-            <option value="ค่าเช่าบ้าน">ค่าเช่าบ้าน</option>
-            <option value="ผ่อนรถ">ผ่อนรถ</option>
-            <option value="เงินเก็บ">เงินเก็บ</option>
-            <option value="ซ่อมบำรุง">ซ่อมบำรุง</option>
-            <option value="เน็ตมือถือ">เน็ตมือถือ</option>
-            <option value="อื่นๆ">อื่นๆ</option>
+            <!-- ตัวรายการจะถูกเติมโดย JavaScript อัตโนมัติตามประเภท -->
           </select>
           <div id="customTitleContainer" class="hidden mt-2">
             <input type="text" id="addCustomTitle" placeholder="ระบุชื่อรายการ..." class="w-full input-bg border rounded-xl p-2.5 outline-none focus:border-blue-500">
@@ -377,11 +356,12 @@
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbz-deg7kT85Kql3qjaQTJPQHmkc_kZOuOl6eM0IMyLwmr9kaedOtvrgvNPw4Je9Ru4w/exec';
 
     let myChart = null;
-    let cachedDashboardData = null; // เก็บข้อมูลไว้เปิด Modal ดูแยกประเภท
+    let cachedDashboardData = null;
 
     window.onload = function() {
       initChart();
       loadData();
+      updateTitleOptions(); // กำหนดรายการเริ่มต้นตามประเภท
     };
 
     function openSidebar() {
@@ -409,6 +389,31 @@
       }
     }
 
+    // ฟังก์ชันเปลี่ยนรายการในดรอปดาวน์ตามประเภท (รายรับ / รายจ่าย)
+    function updateTitleOptions() {
+      const type = document.getElementById('addType').value;
+      const titleSelect = document.getElementById('addTitle');
+      titleSelect.innerHTML = '<option value="" disabled selected>-- เลือกรายการ --</option>';
+
+      let options = [];
+      if (type === 'income') {
+        options = ['เงินเก็บ', 'เงินเดือน', 'อื่นๆ'];
+      } else {
+        options = ['อาหาร', 'น้ำมันรถ', 'ผ่อน', 'เงินเก็บ', 'ซ่อมบำรุง', 'อินเทอร์เน็ต', 'ของในครัว', 'อื่นๆ'];
+      }
+
+      options.forEach(opt => {
+        const el = document.createElement('option');
+        el.value = opt;
+        el.innerText = opt;
+        titleSelect.appendChild(el);
+      });
+
+      // ซ่อนช่องกรอกอื่นๆ ไว้ก่อน
+      document.getElementById('customTitleContainer').classList.add('hidden');
+      document.getElementById('addCustomTitle').required = false;
+    }
+
     function handleTitleChange(val) {
       const container = document.getElementById('customTitleContainer');
       const customInput = document.getElementById('addCustomTitle');
@@ -421,12 +426,28 @@
       }
     }
 
+    // ฟังก์ชันเลือกไอคอนและอิโมจิอัตโนมัติตามชื่อรายการ
+    function getTransactionEmojiAndIcon(title) {
+      let t = (title || '').toLowerCase();
+      if (t.includes('น้ำมัน')) return { emoji: '⛽', icon: 'fa-gas-pump', color: 'bg-amber-500/10 text-amber-500' };
+      if (t.includes('อาหาร') || t.includes('กิน')) return { emoji: '🍜', icon: 'fa-utensils', color: 'bg-rose-500/10 text-rose-500' };
+      if (t.includes('เครื่องดื่ม') || t.includes('น้ำ')) return { emoji: '🧋', icon: 'fa-cup-straw', color: 'bg-cyan-500/10 text-cyan-500' };
+      if (t.includes('เงินเดือน') || t.includes('รายรับ')) return { emoji: '💵', icon: 'fa-money-bill-wave', color: 'bg-emerald-500/10 text-emerald-500' };
+      if (t.includes('เงินเก็บ') || t.includes('ออม')) return { emoji: '💰', icon: 'fa-piggy-bank', color: 'bg-blue-500/10 text-blue-500' };
+      if (t.includes('ผ่อน')) return { emoji: '🚗', icon: 'fa-car', color: 'bg-purple-500/10 text-purple-500' };
+      if (t.includes('เน็ต') || t.includes('อินเทอร์เน็ต')) return { emoji: '🌐', icon: 'fa-wifi', color: 'bg-indigo-500/10 text-indigo-500' };
+      if (t.includes('ซ่อม')) return { emoji: '🔧', icon: 'fa-wrench', color: 'bg-orange-500/10 text-orange-500' };
+      if (t.includes('ครัว') || t.includes('ของใช้')) return { emoji: '🛒', icon: 'fa-basket-shopping', color: 'bg-pink-500/10 text-pink-500' };
+      if (t.includes('ค่าเช่า')) return { emoji: '🏠', icon: 'fa-house', color: 'bg-teal-500/10 text-teal-500' };
+      return { emoji: '📝', icon: 'fa-receipt', color: 'bg-blue-500/10 text-blue-500' };
+    }
+
     function loadData() {
       document.getElementById('refreshIcon').classList.add('fa-spin');
       fetch(`${GAS_API_URL}?action=getDashboard`)
         .then(response => response.json())
         .then(res => {
-          cachedDashboardData = res; // เก็บข้อมูลใส่ Cache
+          cachedDashboardData = res;
           renderDashboard(res);
         })
         .catch(err => {
@@ -476,14 +497,14 @@
         const isIncome = t.type === 'income';
         const sign = isIncome ? '+' : '-';
         const colorClass = isIncome ? 'text-emerald-500' : 'text-rose-500';
-        const bgIcon = isIncome ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500';
         const reasonText = t.account ? ` • เหตุผล: ${t.account}` : '';
+        const itemMeta = getTransactionEmojiAndIcon(t.title);
 
         html += `
           <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-xl item-bg border transition-all">
             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${bgIcon} flex items-center justify-center shrink-0">
-                <i class="fa-solid ${isIncome ? 'fa-arrow-down-left' : 'fa-arrow-up-right'} text-xs sm:text-sm"></i>
+              <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${itemMeta.color} flex items-center justify-center shrink-0 text-base shadow-sm" title="${t.title}">
+                <span>${itemMeta.emoji}</span>
               </div>
               <div class="min-w-0 flex-1">
                 <p class="font-bold text-xs text-white truncate">${t.title}</p>
@@ -502,7 +523,6 @@
       container.innerHTML = html;
     }
 
-    // ฟังก์ชันเปิด Modal ดูรายละเอียดเงินเข้า / เงินออก แยกตามรายการ
     function openDetailModal(type) {
       if (!cachedDashboardData || !cachedDashboardData.summary) return;
       const s = cachedDashboardData.summary;
@@ -535,10 +555,11 @@
         keys.forEach(title => {
           const amount = breakdownData[title];
           const colorText = type === 'income' ? 'text-emerald-500' : 'text-rose-500';
+          const meta = getTransactionEmojiAndIcon(title);
           listHtml += `
             <div class="flex items-center justify-between p-3 rounded-xl item-bg border text-xs">
               <span class="font-medium text-white flex items-center gap-2">
-                <i class="fa-solid fa-circle text-[6px] ${colorText}"></i> ${title}
+                <span>${meta.emoji}</span> ${title}
               </span>
               <span class="font-bold ${colorText}">฿ ${amount.toLocaleString('th-TH', {minimumFractionDigits: 2})}</span>
             </div>
@@ -631,7 +652,7 @@
       .then(() => {
         closeAddModal();
         document.getElementById('addForm').reset();
-        document.getElementById('customTitleContainer').classList.add('hidden');
+        updateTitleOptions();
         loadData();
       })
       .catch(err => alert('บันทึกไม่สำเร็จ: ' + err))
