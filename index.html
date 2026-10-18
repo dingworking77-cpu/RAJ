@@ -116,11 +116,14 @@
         </button>
       </div>
 
-      <div class="flex items-center gap-2 sm:gap-3">
-        <button onclick="loadData()" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition-all text-xs border border-slate-700/50" title="รีเฟรช">
-          <i class="fa-solid fa-rotate-right" id="refreshIcon"></i>
+      <!-- ปุ่มรีเฟรช ย้ายมาอยู่ตรงกลางด้านบน พร้อมรูปแบบไอคอนหมุนโหลด -->
+      <div class="absolute left-1/2 transform -translate-x-1/2">
+        <button onclick="loadData()" class="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700/60 shadow-md transition-all active:scale-95" title="รีเฟรชข้อมูล">
+          <i class="fa-solid fa-circle-notch text-lg text-blue-400" id="refreshIcon"></i>
         </button>
       </div>
+
+      <div></div>
     </header>
 
     <!-- DASHBOARD CONTENT -->
@@ -198,9 +201,6 @@
               <i class="fa-regular fa-clock text-blue-500"></i>
               <h3 class="font-bold text-xs sm:text-sm text-slate-100">รายการล่าสุด (Cloud Synced)</h3>
             </div>
-            <button onclick="loadData()" class="text-slate-400 hover:text-white text-xs p-1">
-              <i class="fa-solid fa-rotate-right"></i>
-            </button>
           </div>
 
           <div id="transactionList" class="space-y-2.5 sm:space-y-3 flex-1 overflow-y-auto max-h-[420px] sm:max-h-[500px] pr-0.5">
@@ -234,7 +234,7 @@
             </div>
           </div>
 
-          <!-- OVERVIEW STATISTICS (BAR CHART) -->
+          <!-- OVERVIEW STATISTICS (BAR CHART - เอา,ยอดสุทธิออก เหลือเฉพาะเงินเข้าและเงินออก) -->
           <div class="glass-card p-4 sm:p-5 rounded-2xl border">
             <div class="flex items-center gap-2 mb-3 sm:mb-4">
               <i class="fa-solid fa-chart-column text-blue-500"></i>
@@ -505,8 +505,7 @@
           labels: [],
           datasets: [
             { label: 'เงินเข้า', data: [], backgroundColor: '#10B981', borderRadius: 4 },
-            { label: 'เงินออก', data: [], backgroundColor: '#EF4444', borderRadius: 4 },
-            { label: 'ยอดสุทธิ', data: [], backgroundColor: '#3B82F6', borderRadius: 4 }
+            { label: 'เงินออก', data: [], backgroundColor: '#EF4444', borderRadius: 4 }
           ]
         },
         options: {
@@ -529,19 +528,16 @@
       let labels = [];
       let incomeArr = [];
       let expenseArr = [];
-      let netArr = [];
 
       sortedMonths.forEach(m => {
         labels.push(m);
         incomeArr.push(monthlyData[m].income);
         expenseArr.push(monthlyData[m].expense);
-        netArr.push(monthlyData[m].income - monthlyData[m].expense);
       });
 
       monthlyChartInstance.data.labels = labels;
       monthlyChartInstance.data.datasets[0].data = incomeArr;
       monthlyChartInstance.data.datasets[1].data = expenseArr;
-      monthlyChartInstance.data.datasets[2].data = netArr;
       monthlyChartInstance.update();
     }
 
