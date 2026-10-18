@@ -211,7 +211,7 @@
         <!-- RIGHT COLUMN -->
         <div class="space-y-4 sm:space-y-6">
 
-          <!-- TODAY SUMMARY CARD (ลบคงเหลือสุทธิออกแล้ว) -->
+          <!-- TODAY SUMMARY CARD -->
           <div class="glass-card p-4 sm:p-5 rounded-2xl border">
             <div class="flex items-center gap-2 mb-3 sm:mb-4">
               <i class="fa-solid fa-lightbulb text-amber-400"></i>
@@ -234,7 +234,7 @@
             </div>
           </div>
 
-          <!-- OVERVIEW STATISTICS (BAR CHART แยกตามเดือน) -->
+          <!-- OVERVIEW STATISTICS (BAR CHART) -->
           <div class="glass-card p-4 sm:p-5 rounded-2xl border">
             <div class="flex items-center gap-2 mb-3 sm:mb-4">
               <i class="fa-solid fa-chart-column text-blue-500"></i>
@@ -276,7 +276,7 @@
     </div>
   </div>
 
-  <!-- MODAL: เพิ่ม/แก้ไข รายการใหม่ -->
+  <!-- MODAL: เพิ่ม/แก้ไข รายการ -->
   <div id="addModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-3 sm:p-4">
     <div class="modal-card w-full max-w-sm sm:max-w-md rounded-2xl p-5 sm:p-6 relative space-y-3.5 border shadow-2xl max-h-[90vh] overflow-y-auto">
       <button onclick="closeAddModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1">
@@ -464,6 +464,8 @@
         const reasonText = t.account ? ` • เหตุผล: ${t.account}` : '';
         const itemMeta = getTransactionEmojiAndIcon(t.title);
 
+        const safeObjStr = JSON.stringify(t).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+
         html += `
           <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-xl item-bg border transition-all">
             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
@@ -477,7 +479,7 @@
             </div>
             <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-2">
               <span class="font-bold text-xs ${colorClass}">${sign}฿${t.amount.toLocaleString('th-TH', {minimumFractionDigits: 2})}</span>
-              <button onclick='openEditModal(${JSON.stringify(t)})' class="hover:text-blue-400 text-slate-400 p-1 transition-all text-xs" title="แก้ไขรายการ">
+              <button onclick='openEditModal("${safeObjStr}")' class="hover:text-blue-400 text-slate-400 p-1 transition-all text-xs" title="แก้ไขรายการ">
                 <i class="fa-solid fa-pen-to-square"></i>
               </button>
               <button onclick="deleteItem(${t.rowIndex})" class="hover:text-rose-500 text-slate-400 p-1 transition-all text-xs" title="ลบรายการ">
@@ -490,7 +492,6 @@
       container.innerHTML = html;
     }
 
-    // สร้างกราฟแท่งรายเดือน (เงินเข้า, เงินออก, สุทธิ)
     function initChart() {
       const ctx = document.getElementById('monthlyChart').getContext('2d');
       monthlyChartInstance = new Chart(ctx, {
@@ -604,16 +605,18 @@
       }
     }
 
+    // แก้ไขจุดบกพร่องตรงนี้เรียบร้อยครับ
     function openAddModal() {
       document.getElementById('editRowIndex').value = '';
       document.getElementById('modalHeaderTitle').innerHTML = '<i class="fa-solid fa-plus text-blue-500"></i> เพิ่มรายการใหม่';
       document.getElementById('addForm').reset();
-      document.updateTitleOptions();
+      updateTitleOptions();
       document.getElementById('addModal').classList.remove('hidden');
       document.getElementById('addModal').classList.add('flex');
     }
 
-    function openEditModal(t) {
+    function openEditModal(jsonStr) {
+      const t = JSON.parse(jsonStr.replace(/&quot;/g, '"').replace(/&apos;/g, "'"));
       document.getElementById('editRowIndex').value = t.rowIndex;
       document.getElementById('modalHeaderTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-blue-500"></i> แก้ไขรายการ';
       
