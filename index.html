@@ -140,17 +140,20 @@
       <!-- TOP 3 SUMMARY CARDS -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5">
         
-        <!-- CARD 1: เงินเข้า -->
-        <div class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden border">
+        <!-- CARD 1: เงินเข้า (คลิกเพื่อดูรายละเอียด) -->
+        <div onclick="openDetailModal('income')" class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden border cursor-pointer hover:border-emerald-500/50 transition-all group">
           <div class="flex items-start justify-between mb-3 sm:mb-4">
-            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-sm sm:text-base">
+            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-sm sm:text-base group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-arrow-up"></i>
             </div>
             <span id="incomeBadge" class="text-xs px-2 py-0.5 sm:py-1 rounded-full bg-emerald-500/10 text-emerald-500 font-semibold border border-emerald-500/20 flex items-center gap-1">
               <i class="fa-solid fa-arrow-trend-up text-[10px]"></i> <span id="incomePercent">0%</span>
             </span>
           </div>
-          <p class="text-xs text-slate-400 mb-1">เงินเข้า</p>
+          <p class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+            <span>เงินเข้า (คลิกดูรายละเอียด)</span>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500 group-hover:text-emerald-400 transition-colors"></i>
+          </p>
           <h2 class="text-xl sm:text-2xl font-bold text-white mb-1.5 sm:mb-2">฿ <span id="totalIncome">0.00</span></h2>
           <p class="text-[11px] text-slate-400 flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -158,17 +161,20 @@
           </p>
         </div>
 
-        <!-- CARD 2: เงินออก -->
-        <div class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden border">
+        <!-- CARD 2: เงินออก (คลิกเพื่อดูรายละเอียด) -->
+        <div onclick="openDetailModal('expense')" class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden border cursor-pointer hover:border-rose-500/50 transition-all group">
           <div class="flex items-start justify-between mb-3 sm:mb-4">
-            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center text-sm sm:text-base">
+            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center text-sm sm:text-base group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-arrow-down"></i>
             </div>
             <span id="expenseBadge" class="text-xs px-2 py-0.5 sm:py-1 rounded-full bg-rose-500/10 text-rose-500 font-semibold border border-rose-500/20 flex items-center gap-1">
               <i class="fa-solid fa-arrow-trend-down text-[10px]"></i> <span id="expensePercent">0%</span>
             </span>
           </div>
-          <p class="text-xs text-slate-400 mb-1">เงินออก</p>
+          <p class="text-xs text-slate-400 mb-1 flex items-center justify-between">
+            <span>เงินออก (คลิกดูรายละเอียด)</span>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-500 group-hover:text-rose-400 transition-colors"></i>
+          </p>
           <h2 class="text-xl sm:text-2xl font-bold text-white mb-1.5 sm:mb-2">฿ <span id="totalExpense">0.00</span></h2>
           <p class="text-[11px] text-slate-400 flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-rose-500"></span>
@@ -283,6 +289,32 @@
     </div>
   </main>
 
+  <!-- MODAL: แสดงรายละเอียดแยกตามรายการ (เงินเข้า / เงินออก) -->
+  <div id="detailModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-3 sm:p-4">
+    <div class="modal-card w-full max-w-md rounded-2xl p-5 sm:p-6 relative space-y-4 border shadow-2xl max-h-[90vh] overflow-y-auto">
+      <button onclick="closeDetailModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center gap-2.5">
+        <div id="detailModalIcon" class="w-10 h-10 rounded-xl flex items-center justify-center text-base"></div>
+        <div>
+          <h3 id="detailModalTitle" class="text-base font-bold text-white">รายละเอียด</h3>
+          <p id="detailModalSubtitle" class="text-xs text-slate-400">ยอดรวมแยกตามประเภทรายการ</p>
+        </div>
+      </div>
+
+      <!-- รายการสรุปย่อย -->
+      <div id="detailBreakdownList" class="space-y-2 pt-2 max-h-[350px] overflow-y-auto pr-1">
+        <!-- ยัดข้อมูลตรงนี้ด้วย JS -->
+      </div>
+
+      <button onclick="closeDetailModal()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all">
+        ปิดหน้าต่าง
+      </button>
+    </div>
+  </div>
+
   <!-- MODAL: เพิ่มรายการใหม่ -->
   <div id="addModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-3 sm:p-4">
     <div class="modal-card w-full max-w-sm sm:max-w-md rounded-2xl p-5 sm:p-6 relative space-y-3.5 border shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -342,10 +374,10 @@
 
   <!-- JAVASCRIPT APP LOGIC -->
   <script>
-    // URL Web App จาก Google Apps Script (ใส่ URL ของคุณเรียบร้อยแล้ว)
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbz-deg7kT85Kql3qjaQTJPQHmkc_kZOuOl6eM0IMyLwmr9kaedOtvrgvNPw4Je9Ru4w/exec';
 
     let myChart = null;
+    let cachedDashboardData = null; // เก็บข้อมูลไว้เปิด Modal ดูแยกประเภท
 
     window.onload = function() {
       initChart();
@@ -389,12 +421,12 @@
       }
     }
 
-    // ดึงข้อมูลผ่าน Fetch API
     function loadData() {
       document.getElementById('refreshIcon').classList.add('fa-spin');
       fetch(`${GAS_API_URL}?action=getDashboard`)
         .then(response => response.json())
         .then(res => {
+          cachedDashboardData = res; // เก็บข้อมูลใส่ Cache
           renderDashboard(res);
         })
         .catch(err => {
@@ -468,6 +500,59 @@
         `;
       });
       container.innerHTML = html;
+    }
+
+    // ฟังก์ชันเปิด Modal ดูรายละเอียดเงินเข้า / เงินออก แยกตามรายการ
+    function openDetailModal(type) {
+      if (!cachedDashboardData || !cachedDashboardData.summary) return;
+      const s = cachedDashboardData.summary;
+
+      const modalIcon = document.getElementById('detailModalIcon');
+      const modalTitle = document.getElementById('detailModalTitle');
+      const modalSubtitle = document.getElementById('detailModalSubtitle');
+      const breakdownList = document.getElementById('detailBreakdownList');
+
+      let breakdownData = {};
+      if (type === 'income') {
+        modalIcon.className = 'w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-base';
+        modalIcon.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+        modalTitle.innerText = 'รายละเอียดเงินเข้า (รายรับ)';
+        modalSubtitle.innerText = `ยอดรวมทั้งหมด ฿ ${s.totalIncome.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+        breakdownData = s.incomeBreakdown || {};
+      } else {
+        modalIcon.className = 'w-10 h-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center text-base';
+        modalIcon.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
+        modalTitle.innerText = 'รายละเอียดเงินออก (รายจ่าย)';
+        modalSubtitle.innerText = `ยอดรวมทั้งหมด ฿ ${s.totalExpense.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+        breakdownData = s.expenseBreakdown || {};
+      }
+
+      let listHtml = '';
+      const keys = Object.keys(breakdownData);
+      if (keys.length === 0) {
+        listHtml = `<div class="text-center py-6 text-slate-500 text-xs">ยังไม่มีข้อมูลในหมวดหมู่นี้</div>`;
+      } else {
+        keys.forEach(title => {
+          const amount = breakdownData[title];
+          const colorText = type === 'income' ? 'text-emerald-500' : 'text-rose-500';
+          listHtml += `
+            <div class="flex items-center justify-between p-3 rounded-xl item-bg border text-xs">
+              <span class="font-medium text-white flex items-center gap-2">
+                <i class="fa-solid fa-circle text-[6px] ${colorText}"></i> ${title}
+              </span>
+              <span class="font-bold ${colorText}">฿ ${amount.toLocaleString('th-TH', {minimumFractionDigits: 2})}</span>
+            </div>
+          `;
+        });
+      }
+
+      breakdownList.innerHTML = listHtml;
+      document.getElementById('detailModal').classList.remove('hidden');
+      document.getElementById('detailModal').classList.add('flex');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.add('hidden');
     }
 
     function initChart() {
