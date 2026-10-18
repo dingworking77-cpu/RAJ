@@ -329,6 +329,7 @@
 
     let monthlyChartInstance = null;
     let cachedDashboardData = null;
+    let transactionsMap = {}; // ใช้เก็บข้อมูลแยกตามแถวเพื่อความแม่นยำในการแก้ไข
 
     window.onload = function() {
       initChart();
@@ -417,6 +418,12 @@
         .then(response => response.json())
         .then(res => {
           cachedDashboardData = res;
+          transactionsMap = {};
+          if (res.transactions) {
+            res.transactions.forEach(t => {
+              transactionsMap[t.rowIndex] = t;
+            });
+          }
           renderDashboard(res);
         })
         .catch(err => {
@@ -464,8 +471,6 @@
         const reasonText = t.account ? ` • เหตุผล: ${t.account}` : '';
         const itemMeta = getTransactionEmojiAndIcon(t.title);
 
-        const safeObjStr = JSON.stringify(t).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-
         html += `
           <div class="flex items-center justify-between p-2.5 sm:p-3 rounded-xl item-bg border transition-all">
             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
@@ -479,7 +484,7 @@
             </div>
             <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-2">
               <span class="font-bold text-xs ${colorClass}">${sign}฿${t.amount.toLocaleString('th-TH', {minimumFractionDigits: 2})}</span>
-              <button onclick='openEditModal("${safeObjStr}")' class="hover:text-blue-400 text-slate-400 p-1 transition-all text-xs" title="แก้ไขรายการ">
+              <button onclick="openEditModal(${t.rowIndex})" class="hover:text-blue-400 text-slate-400 p-1 transition-all text-xs" title="แก้ไขรายการ">
                 <i class="fa-solid fa-pen-to-square"></i>
               </button>
               <button onclick="deleteItem(${t.rowIndex})" class="hover:text-rose-500 text-slate-400 p-1 transition-all text-xs" title="ลบรายการ">
@@ -586,111 +591,4 @@
 
       breakdownList.innerHTML = listHtml;
       document.getElementById('detailModal').classList.remove('hidden');
-      document.getElementById('detailModal').classList.add('flex');
-    }
-
-    function closeDetailModal() {
-      document.getElementById('detailModal').classList.add('hidden');
-    }
-
-    function deleteItem(rowIndex) {
-      if (confirm('คุณต้องการลบรายการนี้ใช่หรือไม่?')) {
-        fetch(GAS_API_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'deleteTransaction', rowIndex: rowIndex })
-        })
-        .then(res => res.json())
-        .then(() => loadData())
-        .catch(err => alert('ลบรายการไม่สำเร็จ: ' + err));
-      }
-    }
-
-    // แก้ไขจุดบกพร่องตรงนี้เรียบร้อยครับ
-    function openAddModal() {
-      document.getElementById('editRowIndex').value = '';
-      document.getElementById('modalHeaderTitle').innerHTML = '<i class="fa-solid fa-plus text-blue-500"></i> เพิ่มรายการใหม่';
-      document.getElementById('addForm').reset();
-      updateTitleOptions();
-      document.getElementById('addModal').classList.remove('hidden');
-      document.getElementById('addModal').classList.add('flex');
-    }
-
-    function openEditModal(jsonStr) {
-      const t = JSON.parse(jsonStr.replace(/&quot;/g, '"').replace(/&apos;/g, "'"));
-      document.getElementById('editRowIndex').value = t.rowIndex;
-      document.getElementById('modalHeaderTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-blue-500"></i> แก้ไขรายการ';
-      
-      document.getElementById('addType').value = t.type;
-      updateTitleOptions();
-      
-      const titleSelect = document.getElementById('addTitle');
-      let found = false;
-      for (let i = 0; i < titleSelect.options.length; i++) {
-        if (titleSelect.options[i].value === t.title) {
-          titleSelect.value = t.title;
-          found = true;
-          break;
-        }
-      }
-      
-      if (!found) {
-        titleSelect.value = 'อื่นๆ';
-        handleTitleChange('อื่นๆ');
-        document.getElementById('addCustomTitle').value = t.title;
-      } else {
-        handleTitleChange(t.title);
-      }
-
-      document.getElementById('addAmount').value = t.amount;
-      document.getElementById('addAccount').value = t.account || '';
-
-      document.getElementById('addModal').classList.remove('hidden');
-      document.getElementById('addModal').classList.add('flex');
-    }
-
-    function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); }
-
-    function saveTransaction(e) {
-      e.preventDefault();
-      const submitBtn = document.getElementById('submitBtn');
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'กำลังบันทึก...';
-      
-      let titleValue = document.getElementById('addTitle').value;
-      if (titleValue === 'อื่นๆ') {
-        titleValue = document.getElementById('addCustomTitle').value.trim() || 'อื่นๆ';
-      }
-
-      const editIndex = document.getElementById('editRowIndex').value;
-      const actionName = editIndex ? 'updateTransaction' : 'addTransaction';
-
-      const item = {
-        type: document.getElementById('addType').value,
-        title: titleValue,
-        amount: document.getElementById('addAmount').value,
-        account: document.getElementById('addAccount').value.trim()
-      };
-
-      fetch(GAS_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          action: actionName,
-          rowIndex: editIndex ? parseInt(editIndex) : undefined,
-          data: item
-        })
-      })
-      .then(res => res.json())
-      .then(() => {
-        closeAddModal();
-        document.getElementById('addForm').reset();
-        loadData();
-      })
-      .catch(err => alert('บันทึกไม่สำเร็จ: ' + err))
-      .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'บันทึกรายการ';
-      });
-    }
-  </script>
-</body>
-</html>
+      document.getElementById('detailModal').classList.add
